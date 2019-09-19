@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlsn:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Players</title>
+</head>
+<body>
+	<h1> Bienvenidos players ....
+	</h1>
+	
+	<table>
+		<th:block th:each="player:${players}">
+			<tr>
+				<td th:text = "${player.idPlayer}" />
+				<td th:text = "${player.name}" />
+				<td th:text = "${player.avg}" />
+			</tr>
+		</th:block>
+	</table>
+</body>
+</html>
