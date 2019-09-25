@@ -25,6 +25,10 @@ public class Play {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Play(int int1, int int2, int int3, int int4, int int5) {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return the idPlay
 	 */

@@ -114,10 +114,6 @@ public class DausSqlApplication implements CommandLineRunner {
 			player2.setName(name);
 			play.setPlayer(player2);
 //			playRepository.save(play);
-			System.out.println(diceOne);
-			System.out.println(diceTwo);
-			System.out.println(isWin);
-			System.out.println(idPlayer);
 			jdbcTemplate.update("INSERT INTO play(diceOne, diceTwo, is_Win, player) VALUES (?,?,?,?)", 
 					diceOne, diceTwo, isWin, idPlayer);
 		}
