@@ -1,8 +1,11 @@
 package com.game.entity;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 
-public class Play {
+
+public class Play implements Serializable{
 
 	@Id
 	private int idPlay;
@@ -10,9 +13,9 @@ public class Play {
 	private int diceTwo;
 	private int isWin;
 	
-	private Player player;
+	private Object player;
 
-	public Play(int idPlay, int diceOne, int diceTwo, int isWin, Player player) {
+	public Play(int idPlay, int diceOne, int diceTwo, int isWin, Object player) {
 		super();
 		this.idPlay = idPlay;
 		this.diceOne = diceOne;
@@ -25,9 +28,7 @@ public class Play {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Play(int int1, int int2, int int3, int int4, int int5) {
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	/**
 	 * @return the idPlay
@@ -88,7 +89,7 @@ public class Play {
 	/**
 	 * @return the player
 	 */
-	public Player getPlayer() {
+	public Object getPlayer() {
 		return player;
 	}
 

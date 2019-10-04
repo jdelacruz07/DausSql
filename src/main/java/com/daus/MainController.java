@@ -59,10 +59,10 @@ public class MainController implements WebMvcConfigurer {
 		}
 		String name = player.getName();
 		double avg = player.getAvg();
-		
-		
 		jdbcTemplate.update("INSERT INTO player(name,avg) VALUES (?,?)", 
 				name,avg);
+//		playerRepository.save(player);
+		
 		return "redirect:/results";
 	}
 
@@ -71,9 +71,11 @@ public class MainController implements WebMvcConfigurer {
 		List<Player> player2 = new ArrayList<>();
 		jdbcTemplate.query(
 	   			"SELECT * FROM player ",  new Object[] {  },
-	   			(rs, rowNum) -> new Player(rs.getInt("idPlayer"), rs.getString("name"), rs.getDouble("avg"))
+	   			(rs, rowNum) -> new Player(rs.getInt("id_player"), rs.getString("name"), rs.getDouble("avg"))
 	    		).forEach(player -> player2.add(player));
 		model.addAttribute("players", player2);
+//		model.addAllAttributes("players", playerRepository.findAll());
+		
 		return "player";
 	}
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -94,10 +96,11 @@ public class MainController implements WebMvcConfigurer {
 	@PutMapping
 	@ResponseBody
 	public void updatePlayer(@RequestBody Player newPlayer) {
+		int  idPlayer = newPlayer.getIdPlayer();
 		String name = newPlayer.getName();
 		double avg = newPlayer.getAvg();
-		jdbcTemplate.update("update player set name = ?",
-				name );
+		jdbcTemplate.update("update player set name = ? where id_player = ?",
+				name, idPlayer );
 //		playerRepository.save(newPlayer);
 	}
 
@@ -110,28 +113,28 @@ public class MainController implements WebMvcConfigurer {
 		int diceOne = newPlay.getDiceOne();
 		int diceTwo = newPlay.getDiceTwo();
 		int isWin = newPlay.getIsWin();
-		jdbcTemplate.update("INSERT INTO play(diceOne, diceTwo, is_Win, player) VALUES (?,?,?,?)", 
+		jdbcTemplate.update("INSERT INTO play(dice_one, dice_two, is_Win, id_player) VALUES (?,?,?,?)", 
 				diceOne,diceTwo, isWin, id);
 //		playRepository.save(newPlay);
 	}
 
 	//#################################          4           ###############################
-	@DeleteMapping(path = "/{id}")
+	@DeleteMapping(path = "/{idPlayer}")
 	@ResponseBody
-	public void deletePlayer(@PathVariable("id") int id) {
+	public void deletePlayer(@PathVariable("idPlayer") int idPlayer) {
 		
-		System.out.println("idplayer /////////////////////////////" +id);
+		System.out.println("idplayer /////////////////////////////" +idPlayer);
 		jdbcTemplate.update(
-    			"DELETE FROM player where idplayer = ?",   id );
+    			"DELETE FROM player where id_Player = ?",   idPlayer );
 //		playerRepository.deleteById(id);
 	}
 
 	//#################################          5           ###############################
-	@DeleteMapping(path = "/{id}/games")
+	@DeleteMapping(path = "/{idPlay}/games")
 	@ResponseBody
-	public void deletePlay(@PathVariable("id") int id) {
+	public void deletePlay(@PathVariable("idPlay") int idPlay) {
 		jdbcTemplate.update(
-    			"DELETE FROM play where idplay = ?",   id );
+    			"DELETE FROM play where id_play = ?",   idPlay );
 //		playRepository.deleteById(id);
 	}
 
@@ -142,37 +145,40 @@ public class MainController implements WebMvcConfigurer {
 	public List<Player> getPlayer() {
 		List<Player> player2 = new ArrayList<>();
 		jdbcTemplate.query(
-				"SELECT * FROM player ",  new Object[] {  },
-				(rs, rowNum) -> new Player(rs.getInt("idPlayer"), rs.getString("name"), rs.getDouble("avg"))
+				"SELECT * FROM player order by id_player ",  new Object[] {  },
+				(rs, rowNum) -> new Player(rs.getInt("id_player"), rs.getString("name"), rs.getDouble("avg"))
 				).forEach(Player -> player2.add(Player));
-		return player2;
 //		return playerRepository.findAll();
+		return player2;
 	}
 
 	//#################################          7           ###############################   NOOOOOOOOOOOOOOOOO Funciona
-	@GetMapping(path = "/{id}/games")
+	@GetMapping(path = "/{idPlayer}/games")
 	@ResponseBody
-	public List<Play> getPlayId(@PathVariable("id") int id) {
-		System.out.println("idplay " + id);
+	public List<Play> getPlayId(@PathVariable("idPlayer") int idPlayer) {
+		System.out.println("id " + idPlayer);
 		List<Play> play = new ArrayList<>();
-		jdbcTemplate.query(
-//				"SELECT * FROM play where idPlay = ? ",  new Object[] { id },
-				"SELECT * FROM play where idPlay = ? ",  new Object[] { id },
-				(rs, rowNum) -> new Play(rs.getInt("idPlay"), rs.getInt("diceOne"), rs.getInt("diceTwo"), rs.getInt("is_Win"), rs.getInt("player"))
-				).forEach(Play -> play.add(Play));
+		play = jdbcTemplate.query(
+				"SELECT * FROM play where id_player = ?",  new Object[] { idPlayer },
+				(rs, rowNum) -> new Play(rs.getInt("id_play"), rs.getInt("dice_one"), rs.getInt("dice_two"), rs.getInt("is_win"),  
+						rs.getInt("id_player"))
+				);
 		return play;
 	}
 
 	//#################################          8           ###############################   Noooooooooooooooooooo Funciona
 	@GetMapping(path = "/ranking")
 	@ResponseBody
-	public List<Play> getPlayerRanking() {
+	public List<Player> getPlayerRanking() {
 		List<Play> play1 = new ArrayList<>();
-//		jdbcTemplate.query(
-//				"SELECT * FROM play ORDERBY player ",  new Object[] {  },
-//				(rs, rowNum) -> new Player(rs.getInt("idPlay"), rs.getString("name"), rs.getDouble("avg"))
-//				).forEach(Play -> play1.add(Play));
+		
+		play1 = jdbcTemplate.query(
+				"SELECT * FROM play order by id_player",  new Object[] {  },
+				(rs, rowNum) -> new Play(rs.getInt("id_play"), rs.getInt("dice_one"), rs.getInt("dice_two"), rs.getInt("is_win"),  
+						rs.getInt("id_player"))
+				);
 //		List<Play> play1 = playRepository.OrderByPlayer();
+		
 		int lastPlayer = 0;
 		int total = 0;
 		int total2 = 0;
@@ -180,17 +186,16 @@ public class MainController implements WebMvcConfigurer {
 		int i = 0;
 		List<Play> play4 = new ArrayList<>();
 		Play play8 = new Play();
+		
 		for (Play play2 : play1) {
 			total2 = 1 + total2;
 			total = 1 + total;
-
 			Player player2 = new Player();
 			Play play6 = new Play();
-			
 			int isWin = play2.getIsWin();
-			player2 = play2.getPlayer();
-			int idPlayer = player2.getIdPlayer(); 
-			double avg = player2.getAvg();
+			int idPlayer = (int) play2.getPlayer();
+			player2.setIdPlayer(idPlayer);
+			double avg = 0.0;
 
 			if (idPlayer == lastPlayer || lastPlayer == 0) {
 				if (lastPlayer != 0 && isWin == 1) {
@@ -205,6 +210,7 @@ public class MainController implements WebMvcConfigurer {
 				play4.add(play6);
 				total = 1;
 				i = 0;
+				
 				if (lastPlayer != 0 && isWin == 1) {
 					i = i + 1;
 				}
@@ -213,13 +219,22 @@ public class MainController implements WebMvcConfigurer {
 			lastPlayer = idPlayer;
 			avg = 100*i/total;
 			player2.setAvg(avg);
-			play2.setPlayer(player2);
+			play2.setPlayer((Player) player2);
 			play8 = play2;
+			
 			if (total2 == count) {
 				play4.add(play2);
 			}
+			jdbcTemplate.update("update player set avg = ? where id_player = ?",
+					avg, idPlayer );
 		}
-		return play4;
+		List<Player> player1 = new ArrayList<>();
+		jdbcTemplate.query(
+				"SELECT * FROM player order by avg desc",  new Object[] { },
+				(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg"))
+				).forEach(Player -> player1.add(Player));
+		
+		return player1;
 	}
 	
 
@@ -232,7 +247,7 @@ public class MainController implements WebMvcConfigurer {
 		System.out.println("Promedio Minimo " + avg );		
 		jdbcTemplate.query(
 				"SELECT * FROM player where avg = ?",  new Object[] { avg },
-				(rs, rowNum) -> new Player(rs.getInt("idPlayer"), rs.getString("name"), rs.getDouble("avg"))
+				(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg"))
 				).forEach(Player -> player1.add(Player));
 //		List<Player> player = playerRepository.OrderByAvgAsc();
 		
@@ -248,7 +263,7 @@ public class MainController implements WebMvcConfigurer {
 		System.out.println("Promedio Maximo " + avg );		
 		jdbcTemplate.query(
 				"SELECT * FROM player where avg = ?",  new Object[] { avg },
-				(rs, rowNum) -> new Player(rs.getInt("idPlayer"), rs.getString("name"), rs.getDouble("avg"))
+				(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg"))
 				).forEach(Player -> player1.add(Player));
 //		List<Player> player = playerRepository.OrderByAvgDesc();
 		

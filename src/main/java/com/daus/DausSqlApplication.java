@@ -43,8 +43,7 @@ public class DausSqlApplication implements CommandLineRunner {
 		do { 
 		wishPlay =	playGame();
 		}
-		while (wishPlay == "y");
-		wishPlay = playGame();
+		while (wishPlay.equals("y"));
 	}
 
 	private String playGame(){
@@ -60,8 +59,8 @@ public class DausSqlApplication implements CommandLineRunner {
 		List<Player> player2 = new ArrayList<>(); 
 				
        	jdbcTemplate.query(
-   			"SELECT * FROM player where idplayer = ?",  new Object[] { id },
-   			(rs, rowNum) -> new Player(rs.getInt("idPlayer"), rs.getString("name"), rs.getDouble("avg"))
+   			"SELECT * FROM player where id_player = ?",  new Object[] { id },
+   			(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg"))
 //   			).forEach(player -> System.out.println(player));
     		).forEach(player -> player2.add(player));
 		System.out.println(player2);
@@ -114,7 +113,7 @@ public class DausSqlApplication implements CommandLineRunner {
 			player2.setName(name);
 			play.setPlayer(player2);
 //			playRepository.save(play);
-			jdbcTemplate.update("INSERT INTO play(diceOne, diceTwo, is_Win, player) VALUES (?,?,?,?)", 
+			jdbcTemplate.update("INSERT INTO play(dice_One, dice_Two, is_Win, id_player) VALUES (?,?,?,?)", 
 					diceOne, diceTwo, isWin, idPlayer);
 		}
 		
