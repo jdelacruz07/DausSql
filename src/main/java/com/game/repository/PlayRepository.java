@@ -1,13 +1,8 @@
 package com.game.repository;
 
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-import com.game.entity.Play;
-
+@Repository
 public interface PlayRepository {
-	
-	
-	
-	
+
 }
