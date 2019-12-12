@@ -1,4 +1,4 @@
-package com.game.entity;
+package com.game.domain;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

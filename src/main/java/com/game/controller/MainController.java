@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.game.entity.Play;
-import com.game.entity.Player;
-import com.game.entity.PlayerRanking;
+import com.game.domain.Play;
+import com.game.domain.Player;
+import com.game.domain.PlayerRanking;
 import com.game.service.PlayService;
 import com.game.service.PlayerService;
 

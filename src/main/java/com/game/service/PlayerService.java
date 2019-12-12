@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.game.entity.Play;
-import com.game.entity.Player;
-import com.game.entity.PlayerRanking;
+import com.game.domain.Play;
+import com.game.domain.Player;
+import com.game.domain.PlayerRanking;
 
 @Service
 public class PlayerService {
@@ -103,5 +103,14 @@ public class PlayerService {
 				.forEach(Player -> player1.add(Player));
 
 		return player1;
+	}
+
+	public Player findPlayerByName(String name) {
+		Player player2 = new Player();
+		String sql = "SELECT * FROM player where name = ?";
+		player2 = jdbcTemplate.queryForObject(sql, new Object[] { name },
+				(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")));
+		System.out.println(player2);
+		return player2;
 	}
 }

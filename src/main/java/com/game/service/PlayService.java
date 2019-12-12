@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.game.entity.Play;
-import com.game.entity.Player;
+import com.game.domain.Play;
+import com.game.domain.Player;
 
 @Service
 public class PlayService {

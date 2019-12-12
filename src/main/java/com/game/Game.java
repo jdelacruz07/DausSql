@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.game.entity.Play;
-import com.game.entity.Player;
+import com.game.domain.Play;
+import com.game.domain.Player;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,14 +31,8 @@ public class Game {
 		LOGGER.warn("Dame tu IdPlayer ");
 		int id = sc.nextInt();
 		System.out.println("idPlayer " + id);
-		List<Player> player2 = new ArrayList<>();
-
-		String sql = "SELECT * FROM player where id_player = ?";
-		jdbcTemplate
-				.query(sql, new Object[] { id },
-						(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")))
-				.forEach(player -> player2.add(player));
-		System.out.println(player2);
+		
+		List<Player> player2 = findPlayerById(id);
 
 		if (player2.size() > 0) {
 			Player play4 = player2.get(0);
@@ -53,6 +48,17 @@ public class Game {
 		LOGGER.warn("Quieres volver a jugar (y/n) ");
 		return wishPlay = sc.next();
 
+	}
+
+	public static List<Player> findPlayerById(int id) {
+		List<Player> player2 = new ArrayList<>();
+		String sql = "SELECT * FROM player where id_player = ?";
+		jdbcTemplate
+				.query(sql, new Object[] { id },
+						(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")))
+				.forEach(player -> player2.add(player));
+		System.out.println(player2);
+		return player2;
 	}
 
 	public static void throwDice(String isThrow, int idPlayer, String name) {
