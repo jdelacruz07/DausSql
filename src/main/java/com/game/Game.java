@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.game.entity.Play;
 import com.game.entity.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class Game {
 	static JdbcTemplate jdbcTemplate;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
 
 	@Autowired
 	public Game(JdbcTemplate jdbcTemplate) {
@@ -24,7 +27,7 @@ public class Game {
 	public static String playGame() {
 		String wishPlay = null;
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Dame tu IdPlayer ");
+		LOGGER.warn("Dame tu IdPlayer ");
 		int id = sc.nextInt();
 		System.out.println("idPlayer " + id);
 		List<Player> player2 = new ArrayList<>();
@@ -40,16 +43,14 @@ public class Game {
 			Player play4 = player2.get(0);
 			int idPlayer = play4.getIdPlayer();
 			String name = play4.getName();
-			System.out.println("IdPlayer Correcto ");
-			System.out.println(idPlayer);
-			System.out.println("Lanza dados (y/n)");
+			LOGGER.warn("IdPlayer Correcto ");
+			LOGGER.warn("Lanza dados (y/n)");
 			String isThrow = sc.next();
-			System.out.println(isThrow);
 			throwDice(isThrow, idPlayer, name);
 		} else {
-			System.out.println("idPlayer inCorrecto ");
+			LOGGER.warn("idPlayer inCorrecto ");
 		}
-		System.out.println("Quieres volver a jugar (y/n) ");
+		LOGGER.warn("Quieres volver a jugar (y/n) ");
 		return wishPlay = sc.next();
 
 	}
@@ -62,15 +63,15 @@ public class Game {
 			int diceOne = (int) Math.floor(Math.random() * 6 + 1);
 			int diceTwo = (int) Math.floor(Math.random() * 6 + 1);
 			int isWin = 0;
-			System.out.println("diceOne " + diceOne);
-			System.out.println("diceTwo " + diceTwo);
+			LOGGER.warn("diceOne " + diceOne);
+			LOGGER.warn("diceTwo " + diceTwo);
 
 			if (diceOne + diceTwo == 7) {
 				isWin = 1;
-				System.out.println("Jugada Ganadora ");
+				LOGGER.warn("Jugada Ganadora ");
 			} else {
 				isWin = 0;
-				System.out.println("Jugada Perdedora ");
+				LOGGER.warn("Jugada Perdedora ");
 			}
 			play.setDiceOne(diceOne);
 			play.setDiceTwo(diceTwo);
