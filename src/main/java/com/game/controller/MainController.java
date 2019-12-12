@@ -1,13 +1,10 @@
 package com.game.controller;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,15 +27,15 @@ import com.game.service.PlayerService;
 @Controller
 @RequestMapping(path = "/players")
 public class MainController implements WebMvcConfigurer {
-
-	@Autowired
-	JdbcTemplate jdbcTemplate;
-
-	@Autowired
 	PlayerService playerService;
-	@Autowired
 	PlayService playService;
 
+	@Autowired
+	public MainController(PlayerService playerService, PlayService playService) {
+		super();
+		this.playerService = playerService;
+		this.playService = playService;
+	}
 
 	// Parte de la vista para insertar jugador
 	@Override
@@ -65,18 +62,10 @@ public class MainController implements WebMvcConfigurer {
 
 	@GetMapping("/web")
 	public String getPlayer(Model model) {
-		System.out.println("***************************************************************");
-		List<Player> player2 = new ArrayList<>();
-		jdbcTemplate
-				.query("SELECT * FROM player ", new Object[] {},
-						(rs, rowNum) -> new Player(rs.getInt("id_player"), rs.getString("name"), rs.getDouble("avg")))
-				.forEach(player -> player2.add(player));
-		model.addAttribute("players", player2);
-
+		model.addAttribute("players", playerService.getPlayers());
 		return "player";
 	}
 
-	// ################################# 1 ###############################
 	@PostMapping
 	@ResponseBody
 	public void createPlayer(@RequestBody Player newPlayer) {

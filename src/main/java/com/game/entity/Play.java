@@ -22,6 +22,7 @@ public class Play {
 	}
 
 	public Play() {
+
 	}
 
 	public int getIdPlay() {
@@ -60,7 +61,7 @@ public class Play {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
+	public void setPlayer(Object player) {
 		this.player = player;
 	}
 
