@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.game.entity.Play;
 import com.game.entity.Player;
+import com.game.entity.PlayerRanking;
 import com.game.service.PlayService;
 import com.game.service.PlayerService;
 

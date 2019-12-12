@@ -32,7 +32,6 @@ public class PlayService {
 	}
 
 	public List<Play> getPlayById(int idPlayer) {
-		System.out.println("id " + idPlayer);
 		List<Play> play = new ArrayList<>();
 		String sql = "SELECT * FROM play where id_player = ?";
 		play = jdbcTemplate.query(sql, new Object[] { idPlayer }, (rs, rowNum) -> new Play(rs.getInt("id_play"),

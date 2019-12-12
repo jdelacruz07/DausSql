@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.game.entity.Play;
 import com.game.entity.Player;
+import com.game.entity.PlayerRanking;
 
 @Service
 public class PlayerService {
@@ -47,73 +48,41 @@ public class PlayerService {
 	}
 
 	public List<Player> getRanking() {
-		List<Play> play1 = new ArrayList<>();
-		String sql = "SELECT * FROM play order by id_player";
-		play1 = jdbcTemplate.query(sql, new Object[] {}, (rs, rowNum) -> new Play(rs.getInt("id_play"),
-				rs.getInt("dice_one"), rs.getInt("dice_two"), rs.getInt("is_win"), rs.getInt("id_player")));
+		List<PlayerRanking> playerRanking = new ArrayList<>();
+		String sql = "SELECT id_player, avg(is_Win)*100 as average FROM play group by id_player";
+		playerRanking = jdbcTemplate.query(sql, new Object[] {},
+				(rs, rowNum) -> new PlayerRanking(rs.getInt("id_player"), rs.getDouble("average")));
 
-		int lastPlayer = 0;
-		int total = 0;
-		int total2 = 0;
-		int count = play1.size();
-		int i = 0;
-		List<Play> play4 = new ArrayList<>();
-		Play play8 = new Play();
+		playerUpdateAvg(playerRanking);
 
-		for (Play play2 : play1) {
-			total2 = 1 + total2;
-			total = 1 + total;
-			Player player2 = new Player();
-			Play play6 = new Play();
-			int isWin = play2.getIsWin();
-			int idPlayer = (int) play2.getPlayer();
-			player2.setIdPlayer(idPlayer);
-			double avg = 0.0;
+		List<Player> player1 = playerRankingOrder();
 
-			if (idPlayer == lastPlayer || lastPlayer == 0) {
-				if (lastPlayer != 0 && isWin == 1) {
-					i = i + 1;
-				} else {
-					if (lastPlayer == 0 && isWin == 1) {
-						i = i + 1;
-					}
-				}
-			} else {
-				play6 = play8;
-				play4.add(play6);
-				total = 1;
-				i = 0;
-				if (lastPlayer != 0 && isWin == 1) {
-					i = i + 1;
-				}
-			}
-			lastPlayer = idPlayer;
-			avg = 100 * i / total;
-			player2.setAvg(avg);
-			play2.setPlayer((Player) player2);
-			play8 = play2;
+		return player1;
+	}
 
-			if (total2 == count) {
-				play4.add(play2);
-			}
+	private void playerUpdateAvg(List<PlayerRanking> playerRanking) {
+		for (PlayerRanking player : playerRanking) {
+			double avg = player.getAvg();
+			int idPlayer = player.getIdPlayer();
 			String sql2 = "update player set avg = ? where id_player = ?";
 			jdbcTemplate.update(sql2, avg, idPlayer);
 		}
+	}
+
+	private List<Player> playerRankingOrder() {
 		List<Player> player1 = new ArrayList<>();
 		String sql3 = "SELECT * FROM player order by avg desc";
 		jdbcTemplate
 				.query(sql3, new Object[] {},
 						(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")))
 				.forEach(Player -> player1.add(Player));
-
 		return player1;
 	}
 
 	public List<Player> getplayerLast() {
 		List<Player> player1 = new ArrayList<>();
 		String sql = "SELECT min(avg) FROM player ";
-		int avg = jdbcTemplate.queryForObject(sql, Integer.class);
-		System.out.println("Promedio Minimo " + avg);
+		double avg = jdbcTemplate.queryForObject(sql, Double.class);
 		String sql2 = "SELECT * FROM player where avg = ?";
 		jdbcTemplate
 				.query(sql2, new Object[] { avg },
@@ -126,8 +95,7 @@ public class PlayerService {
 	public List<Player> getPlayerFirst() {
 		List<Player> player1 = new ArrayList<>();
 		String sql = "SELECT max(avg) FROM player ";
-		int avg = jdbcTemplate.queryForObject(sql, Integer.class);
-		System.out.println("Promedio Maximo " + avg);
+		double avg = jdbcTemplate.queryForObject(sql, Double.class);
 		String sql2 = "SELECT * FROM player where avg = ?";
 		jdbcTemplate
 				.query(sql2, new Object[] { avg },
