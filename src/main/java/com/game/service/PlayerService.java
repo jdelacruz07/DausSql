@@ -27,7 +27,6 @@ public class PlayerService {
 	public void updateBy(Player player) {
 		int idPlayer = player.getIdPlayer();
 		String name = player.getName();
-		double avg = player.getAvg();
 		String sql = "update player set name = ? where id_player = ?";
 		jdbcTemplate.update(sql, name, idPlayer);
 	}
@@ -88,7 +87,6 @@ public class PlayerService {
 				.query(sql2, new Object[] { avg },
 						(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")))
 				.forEach(Player -> player1.add(Player));
-
 		return player1;
 	}
 
@@ -101,7 +99,6 @@ public class PlayerService {
 				.query(sql2, new Object[] { avg },
 						(rs, rowNum) -> new Player(rs.getInt("id_Player"), rs.getString("name"), rs.getDouble("avg")))
 				.forEach(Player -> player1.add(Player));
-
 		return player1;
 	}
 

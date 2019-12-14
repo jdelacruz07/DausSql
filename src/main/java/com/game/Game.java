@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.game.domain.Play;
 import com.game.domain.Player;
 
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ public class Game {
 		LOGGER.warn("Dame tu IdPlayer ");
 		int id = sc.nextInt();
 		System.out.println("idPlayer " + id);
-		
+
 		List<Player> player2 = findPlayerById(id);
 
 		if (player2.size() > 0) {
@@ -64,8 +63,6 @@ public class Game {
 	public static void throwDice(String isThrow, int idPlayer, String name) {
 
 		if (isThrow.equals("y")) {
-			Play play = new Play();
-			Player player2 = new Player();
 			int diceOne = (int) Math.floor(Math.random() * 6 + 1);
 			int diceTwo = (int) Math.floor(Math.random() * 6 + 1);
 			int isWin = 0;
@@ -79,12 +76,6 @@ public class Game {
 				isWin = 0;
 				LOGGER.warn("Jugada Perdedora ");
 			}
-			play.setDiceOne(diceOne);
-			play.setDiceTwo(diceTwo);
-			play.setIsWin(isWin);
-			player2.setIdPlayer(idPlayer);
-			player2.setName(name);
-			play.setPlayer(player2);
 			String sql = "INSERT INTO play(dice_One, dice_Two, is_Win, id_player) VALUES (?,?,?,?)";
 			jdbcTemplate.update(sql, diceOne, diceTwo, isWin, idPlayer);
 		}

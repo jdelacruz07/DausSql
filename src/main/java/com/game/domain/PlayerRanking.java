@@ -1,13 +1,11 @@
 package com.game.domain;
 
-
 public class PlayerRanking {
 
 	private int idPlayer;
 	private double avg;
-	
+
 	public PlayerRanking(int idPlayer, double avg) {
-		super();
 		this.idPlayer = idPlayer;
 		this.avg = avg;
 	}
@@ -27,8 +25,5 @@ public class PlayerRanking {
 	public void setAvg(double avg) {
 		this.avg = avg;
 	}
-	
-	
-	
-	
+
 }

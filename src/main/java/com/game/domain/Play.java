@@ -9,20 +9,15 @@ public class Play {
 	private int diceOne;
 	private int diceTwo;
 	private int isWin;
+	private int player;
 
-	private Object player;
-
-	public Play(int idPlay, int diceOne, int diceTwo, int isWin, Object player) {
+	public Play(int idPlay, int diceOne, int diceTwo, int isWin, int player) {
 		super();
 		this.idPlay = idPlay;
 		this.diceOne = diceOne;
 		this.diceTwo = diceTwo;
 		this.isWin = isWin;
 		this.player = player;
-	}
-
-	public Play() {
-
 	}
 
 	public int getIdPlay() {
@@ -57,11 +52,11 @@ public class Play {
 		this.isWin = isWin;
 	}
 
-	public Object getPlayer() {
+	public int getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(Object player) {
+	public void setPlayer(int player) {
 		this.player = player;
 	}
 

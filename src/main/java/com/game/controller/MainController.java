@@ -21,7 +21,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.game.domain.Play;
 import com.game.domain.Player;
-import com.game.domain.PlayerRanking;
 import com.game.service.PlayService;
 import com.game.service.PlayerService;
 
@@ -45,14 +44,12 @@ public class MainController implements WebMvcConfigurer {
 	}
 
 	@GetMapping("/")
-
 	public String showForm(Player player) {
 		return "form";
 	}
 
 	@PostMapping("/")
 	public String checkPersonInfo(@Valid Player player, BindingResult bindingResult) {
-
 		if (bindingResult.hasErrors()) {
 			return "form";
 		}
